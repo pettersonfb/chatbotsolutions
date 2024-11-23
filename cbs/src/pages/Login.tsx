@@ -1,32 +1,25 @@
 import React from 'react';
-import { useAuth } from '../hooks/useAuth';
-
-const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 const Login: React.FC = () => {
-  const { login } = useAuth();
-
-  const handleLoginSuccess = (response: any) => {
-    console.log('Login successful!', response);
-    login();
+  const handleLoginSuccess = (credentialResponse: any) => {
+    console.log("Login bem-sucedido:", credentialResponse);
   };
 
-  const handleLoginFailure = (response: any) => {
-    console.error('Login failed!', response);
+  const handleLoginError = () => {
+    console.error("Erro ao fazer login");
   };
 
   return (
-    <div className="login-page">
-      <h1>Login</h1>
-      <button
-        onClick={() => {
-          // Redirect to Google OAuth
-          window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?response_type=token&client_id=${CLIENT_ID}&scope=https://www.googleapis.com/auth/calendar.events.readonly&redirect_uri=${window.location.origin}/calendar`;
-        }}
-      >
-        Login with Google
-      </button>
-    </div>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <div>
+        <h1>Login com Google</h1>
+        <GoogleLogin
+          onSuccess={handleLoginSuccess}
+          onError={handleLoginError}
+        />
+      </div>
+    </GoogleOAuthProvider>
   );
 };
 
